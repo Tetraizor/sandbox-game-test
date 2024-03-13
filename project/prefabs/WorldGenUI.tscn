@@ -1,96 +1,15 @@
-[gd_scene load_steps=16 format=3 uid="uid://cc3b5y18hry0a"]
+[gd_scene load_steps=6 format=3 uid="uid://cc3b5y18hry0a"]
 
 [ext_resource type="Script" path="res://scripts/Tetraizor/UI/WorldGeneratorUIManager.cs" id="1_cx80a"]
 [ext_resource type="FontFile" uid="uid://uaqomnnllvxu" path="res://res/fonts/PixelArtFont.ttf" id="1_s7kfg"]
 [ext_resource type="Script" path="res://scripts/Tetraizor/UI/ControlFocusCallbackProvider.cs" id="2_1jm78"]
 [ext_resource type="Texture2D" uid="uid://cibb6p2b8plhl" path="res://art/ui/prototype.png" id="3_s2c43"]
 
-[sub_resource type="Animation" id="Animation_hcgoa"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerInfoBox:size")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(304, 36)]
-}
-
-[sub_resource type="Animation" id="Animation_w65i5"]
-resource_name = "collapse"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerInfoBox:size")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(304, 356), Vector2(304, 42)]
-}
-
-[sub_resource type="Animation" id="Animation_xf7j4"]
-resource_name = "open"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerInfoBox:size")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(304, 42), Vector2(304, 356)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_027e4"]
-_data = {
-"RESET": SubResource("Animation_hcgoa"),
-"collapse": SubResource("Animation_w65i5"),
-"open": SubResource("Animation_xf7j4")
-}
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_y2dc4"]
-animation = &"collapse"
-
-[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_r4l21"]
-animation = &"open"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_joooh"]
-advance_mode = 2
-advance_expression = "!_isCollapsed"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_xib1o"]
-advance_mode = 2
-advance_expression = "_isCollapsed"
-
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ujjb3"]
-advance_mode = 2
-
-[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_32bn1"]
-states/End/position = Vector2(635, 100)
-states/Start/position = Vector2(333, 100)
-states/collapse/node = SubResource("AnimationNodeAnimation_y2dc4")
-states/collapse/position = Vector2(494, 38)
-states/open/node = SubResource("AnimationNodeAnimation_r4l21")
-states/open/position = Vector2(494, 165)
-transitions = ["collapse", "open", SubResource("AnimationNodeStateMachineTransition_joooh"), "open", "collapse", SubResource("AnimationNodeStateMachineTransition_xib1o"), "Start", "collapse", SubResource("AnimationNodeStateMachineTransition_ujjb3")]
-graph_offset = Vector2(-778.25, -58.7475)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_4qimp"]
 atlas = ExtResource("3_s2c43")
 region = Rect2(1, 1, 10, 5)
 
-[node name="WorldGenUI" type="Control" node_paths=PackedStringArray("_collapseButton", "_collapsedButtonIcon", "_uiClickManager")]
+[node name="WorldGenUI" type="Control" node_paths=PackedStringArray("_buttonCollapseHeader", "_iconCollapsedButton", "_panelClickCallbackProvider", "_panelCollapsible")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -99,34 +18,33 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_cx80a")
-_collapseButton = NodePath("PlayerInfoBox/HeaderToggle")
-_collapsedButtonIcon = NodePath("PlayerInfoBox/HeaderToggle/Icon")
-_uiClickManager = NodePath("PlayerInfoBox")
+_buttonCollapseHeader = NodePath("PlayerInfoBox/HeaderToggle")
+_iconCollapsedButton = NodePath("PlayerInfoBox/HeaderToggle/Icon")
+_panelClickCallbackProvider = NodePath("PlayerInfoBox")
+_panelCollapsible = NodePath("PlayerInfoBox")
 
 [node name="UIManager" type="Node" parent="."]
 
-[node name="AnimationTree" type="AnimationTree" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_027e4")
-}
-tree_root = SubResource("AnimationNodeStateMachine_32bn1")
-advance_expression_base_node = NodePath("..")
-
 [node name="PlayerInfoBox" type="Panel" parent="."]
 clip_contents = true
-layout_mode = 0
-offset_left = 24.0
-offset_top = 24.0
-offset_right = 328.0
-offset_bottom = 60.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -326.0
+offset_top = 22.0
+offset_right = -23.0
+offset_bottom = 341.0
+grow_horizontal = 0
 script = ExtResource("2_1jm78")
+metadata/_edit_group_ = true
 
 [node name="FormContainer" type="MarginContainer" parent="PlayerInfoBox"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 42.0
+offset_top = 40.0
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 16
@@ -220,22 +138,26 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HeaderToggle" type="Button" parent="PlayerInfoBox"]
-layout_mode = 0
-offset_right = 304.0
-offset_bottom = 42.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 39.0
+grow_horizontal = 2
 mouse_filter = 1
 
 [node name="Label" type="Label" parent="PlayerInfoBox/HeaderToggle"]
 texture_filter = 1
-layout_mode = 2
-offset_left = 16.0
-offset_top = 12.0
-offset_right = 288.0
-offset_bottom = 33.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_fonts/font = ExtResource("1_s7kfg")
 theme_override_font_sizes/font_size = 24
 text = "World Generation v0.1"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Icon" type="TextureRect" parent="PlayerInfoBox/HeaderToggle"]
 texture_filter = 1
@@ -243,10 +165,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -40.0
-offset_top = 16.0
-offset_right = -17.0
-offset_bottom = 28.0
+offset_left = -24.0
+offset_top = 15.0
+offset_right = -9.0
+offset_bottom = 23.0
 grow_horizontal = 0
 texture = SubResource("AtlasTexture_4qimp")
 expand_mode = 1

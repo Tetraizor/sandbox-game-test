@@ -4,11 +4,16 @@ namespace Tetraizor.UI;
 
 public partial class WorldGeneratorUIManager : Control
 {
+    [ExportSubgroup("Main Parameters")]
+    [Export] private bool _startFromCollapsed = true;
 
     [ExportSubgroup("UI References")]
-    [Export] private Button _collapseButton;
-    [Export] private TextureRect _collapsedButtonIcon;
-    [Export] private ControlFocusCallbackProvider _uiClickManager;
+    [Export] private Button _buttonCollapseHeader;
+    [Export] private TextureRect _iconCollapsedButton;
+    [Export] private ControlFocusCallbackProvider _panelClickCallbackProvider;
+
+    [Export] private Control _panelCollapsible;
+    private Vector2 _defaultPanelSize;
 
     // States
     private static bool _isInteractingWithUI = false;
@@ -23,7 +28,14 @@ public partial class WorldGeneratorUIManager : Control
     // Godot Lifecycle Methods
     public override void _Ready()
     {
-        _collapseButton.Pressed += ToggleCollapse;
+        _buttonCollapseHeader.Pressed += ToggleCollapse;
+
+        _defaultPanelSize = _panelClickCallbackProvider.Size;
+        if (_startFromCollapsed)
+        {
+            _panelCollapsible.Size = _buttonCollapseHeader.Size;
+            _isCollapsed = true;
+        }
 
         GetViewport().GuiFocusChanged += (focusedElement) =>
         {
@@ -31,7 +43,7 @@ public partial class WorldGeneratorUIManager : Control
             _isInteractingWithUI = focusedElement != null;
         };
 
-        _uiClickManager.ClickedOutside += () =>
+        _panelClickCallbackProvider.ClickedOutside += () =>
         {
             if (_focusedElement != null)
             {
@@ -41,7 +53,7 @@ public partial class WorldGeneratorUIManager : Control
             _isInteractingWithUI = false;
         };
 
-        _uiClickManager.ClickedInside += () =>
+        _panelClickCallbackProvider.ClickedInside += () =>
         {
             _isInteractingWithUI = true;
         };
@@ -54,11 +66,22 @@ public partial class WorldGeneratorUIManager : Control
 
         if (_isCollapsed)
         {
-            _collapsedButtonIcon.FlipV = true;
+            _iconCollapsedButton.FlipV = true;
+
+            Tween tween = GetTree().CreateTween();
+            tween.TweenProperty(_panelCollapsible, "size", _buttonCollapseHeader.Size, .2f);
+            tween.Play();
+
+            GD.Print("Start from " + _panelCollapsible.Size + " to " + _buttonCollapseHeader.Size);
         }
         else
         {
-            _collapsedButtonIcon.FlipV = false;
+            Tween tween = GetTree().CreateTween();
+            tween.TweenProperty(_panelCollapsible, "size", _defaultPanelSize, .2f);
+            tween.Play();
+            _iconCollapsedButton.FlipV = false;
+
+            GD.Print("Start from " + _panelCollapsible.Size + " to " + _defaultPanelSize);
         }
     }
 }

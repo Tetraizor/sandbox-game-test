@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="Miner"
-run/main_scene="res://scenes/main_scene.tscn"
+run/main_scene="res://scenes/MainScene.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 config/icon="res://art/other/icon.png"
 
 [display]
 
-window/size/viewport_width=128
+window/size/viewport_width=648
 window/stretch/mode="viewport"
 window/stretch/aspect="keep_height"
 
@@ -29,6 +29,7 @@ project/assembly_name="Miner"
 
 folder_colors={
 "res://art/": "green",
+"res://prefabs/": "yellow",
 "res://res/": "purple",
 "res://scenes/": "orange",
 "res://scripts/": "red",

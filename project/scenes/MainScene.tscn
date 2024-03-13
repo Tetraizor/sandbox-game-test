@@ -1,11 +1,13 @@
-[gd_scene load_steps=36 format=3 uid="uid://bggr2uhsq3q57"]
+[gd_scene load_steps=39 format=3 uid="uid://bggr2uhsq3q57"]
 
 [ext_resource type="Script" path="res://scripts/Tetraizor/Player/PlayerController.cs" id="1_bvmsn"]
 [ext_resource type="Texture2D" uid="uid://d02ht5xhhxelr" path="res://sprite/character/character.png" id="2_86qqo"]
 [ext_resource type="Script" path="res://scripts/Tetraizor/Player/CameraController.cs" id="3_0vm87"]
 [ext_resource type="TileSet" uid="uid://d0wl0yc123xb8" path="res://art/tilemaps/debug.tres" id="3_sfb30"]
 [ext_resource type="Script" path="res://scripts/Tetraizor/ProceduralGeneration/WorldGenerator.cs" id="4_wis5h"]
-[ext_resource type="PackedScene" uid="uid://cc3b5y18hry0a" path="res://scenes/world_gen_ui.tscn" id="5_eq06j"]
+[ext_resource type="PackedScene" uid="uid://cc3b5y18hry0a" path="res://prefabs/WorldGenUI.tscn" id="5_eq06j"]
+[ext_resource type="Script" path="res://scripts/Tetraizor/UI/Debug/DebugUI.cs" id="6_22kw2"]
+[ext_resource type="FontFile" uid="uid://uaqomnnllvxu" path="res://res/fonts/PixelArtFont.ttf" id="6_ya5kk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_exnyn"]
 size = Vector2(40, 52)
@@ -242,6 +244,12 @@ color = Color(1, 1, 1, 0.686275)
 color_ramp = SubResource("GradientTexture1D_7lwt3")
 collision_use_scale = true
 
+[sub_resource type="LabelSettings" id="LabelSettings_i6xhw"]
+line_spacing = -4.0
+font = ExtResource("6_ya5kk")
+font_size = 31
+shadow_color = Color(0, 0, 0, 0.0784314)
+
 [node name="MainScene" type="Node"]
 
 [node name="Player" type="CharacterBody2D" parent="." node_paths=PackedStringArray("_animationTree", "_renderer", "_walkParticles", "_jumpParticles", "_landParticles")]
@@ -308,7 +316,7 @@ process_material = SubResource("ParticleProcessMaterial_nmc20")
 lifetime = 0.8
 
 [node name="Camera" type="Camera2D" parent="." node_paths=PackedStringArray("_target")]
-position = Vector2(574, 327)
+position = Vector2(324, 327)
 script = ExtResource("3_0vm87")
 _target = NodePath("../Player")
 
@@ -319,10 +327,35 @@ script = ExtResource("4_wis5h")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="WorldGenUI" parent="UI" node_paths=PackedStringArray("_collapseButton", "_collapsedButtonIcon", "_uiClickManager") instance=ExtResource("5_eq06j")]
-_collapseButton = NodePath("PlayerInfoBox/HeaderToggle")
-_collapsedButtonIcon = NodePath("PlayerInfoBox/HeaderToggle/Icon")
-_uiClickManager = NodePath("PlayerInfoBox")
+[node name="WorldGenUI" parent="UI" instance=ExtResource("5_eq06j")]
+offset_top = 1.0
+offset_bottom = 1.0
+
+[node name="DebugDisplay" type="Control" parent="UI" node_paths=PackedStringArray("_player", "_labelDebugDisplay")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6_22kw2")
+_player = NodePath("../../Player")
+_labelDebugDisplay = NodePath("DebugLabel")
+metadata/_edit_lock_ = true
+
+[node name="DebugLabel" type="Label" parent="UI/DebugDisplay"]
+texture_filter = 1
+layout_mode = 1
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 92.0
+offset_bottom = 112.0
+text = "Test 123
+asdasd
+asd
+asdasd"
+label_settings = SubResource("LabelSettings_i6xhw")
 
 [node name="Environment" type="Node" parent="."]
 
